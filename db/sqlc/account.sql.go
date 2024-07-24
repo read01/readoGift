@@ -20,14 +20,14 @@ INSERT INTO accounts (
 `
 
 type CreateAccountParams struct {
-	Owner    string
-	Balance  int64
-	Currency string
+	Owner    string `json:"owner"`
+	Balance  int64  `json:"balance"`
+	Currency string `json:"currency"`
 }
 
-func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error) {
-	row := q.db.QueryRow(ctx, createAccount, arg.Owner, arg.Balance, arg.Currency)
-	var i Account
+func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error) {
+	row := q.db.QueryRowContext(ctx, createAccount, arg.Owner, arg.Balance, arg.Currency)
+	var i Accounts
 	err := row.Scan(
 		&i.ID,
 		&i.Owner,
@@ -44,9 +44,9 @@ WHERE id = $1
 RETURNING id, owner, balance, currency, created_at
 `
 
-func (q *Queries) DeleteAccount(ctx context.Context, id int64) (Account, error) {
-	row := q.db.QueryRow(ctx, deleteAccount, id)
-	var i Account
+func (q *Queries) DeleteAccount(ctx context.Context, id int64) (Accounts, error) {
+	row := q.db.QueryRowContext(ctx, deleteAccount, id)
+	var i Accounts
 	err := row.Scan(
 		&i.ID,
 		&i.Owner,
@@ -62,9 +62,9 @@ SELECT id, owner, balance, currency, created_at FROM accounts
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetAccount(ctx context.Context, id int64) (Account, error) {
-	row := q.db.QueryRow(ctx, getAccount, id)
-	var i Account
+func (q *Queries) GetAccount(ctx context.Context, id int64) (Accounts, error) {
+	row := q.db.QueryRowContext(ctx, getAccount, id)
+	var i Accounts
 	err := row.Scan(
 		&i.ID,
 		&i.Owner,
@@ -83,19 +83,19 @@ OFFSET $2
 `
 
 type ListAccountParams struct {
-	Limit  int32
-	Offset int32
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Account, error) {
-	rows, err := q.db.Query(ctx, listAccount, arg.Limit, arg.Offset)
+func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Accounts, error) {
+	rows, err := q.db.QueryContext(ctx, listAccount, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Account
+	var items []Accounts
 	for rows.Next() {
-		var i Account
+		var i Accounts
 		if err := rows.Scan(
 			&i.ID,
 			&i.Owner,
@@ -106,6 +106,9 @@ func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Acc
 			return nil, err
 		}
 		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -120,11 +123,11 @@ WHERE id = $1
 `
 
 type UpdateAccountParams struct {
-	ID      int64
-	Balance int64
+	ID      int64 `json:"id"`
+	Balance int64 `json:"balance"`
 }
 
 func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) error {
-	_, err := q.db.Exec(ctx, updateAccount, arg.ID, arg.Balance)
+	_, err := q.db.ExecContext(ctx, updateAccount, arg.ID, arg.Balance)
 	return err
 }

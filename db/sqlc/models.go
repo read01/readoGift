@@ -5,28 +5,29 @@
 package db
 
 import (
-	"github.com/jackc/pgx/v5/pgtype"
+	"database/sql"
+	"time"
 )
 
-type Account struct {
-	ID        int64
-	Owner     string
-	Balance   int64
-	Currency  string
-	CreatedAt pgtype.Timestamp
+type Accounts struct {
+	ID        int64        `json:"id"`
+	Owner     string       `json:"owner"`
+	Balance   int64        `json:"balance"`
+	Currency  string       `json:"currency"`
+	CreatedAt sql.NullTime `json:"created_at"`
 }
 
-type Entry struct {
-	ID        int64
-	AccountID pgtype.Int8
-	Amount    int64
-	CreatedAt pgtype.Timestamp
+type Entries struct {
+	ID        int64         `json:"id"`
+	AccountID sql.NullInt64 `json:"account_id"`
+	Amount    int64         `json:"amount"`
+	CreatedAt sql.NullTime  `json:"created_at"`
 }
 
-type Transfer struct {
-	ID            int64
-	FromAccountID pgtype.Int8
-	ToAccountID   pgtype.Int8
-	Amount        int64
-	CreatedAt     pgtype.Timestamp
+type Transfers struct {
+	ID            int64         `json:"id"`
+	FromAccountID sql.NullInt64 `json:"from_account_id"`
+	ToAccountID   sql.NullInt64 `json:"to_account_id"`
+	Amount        int64         `json:"amount"`
+	CreatedAt     time.Time     `json:"created_at"`
 }
