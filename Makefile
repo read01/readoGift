@@ -20,4 +20,7 @@ sqlc:
 test:
 	go test -v -cover ./...
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test
+pg:
+	docker exec -it pg15 psql -U root -d simple_bank 
+
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test pg

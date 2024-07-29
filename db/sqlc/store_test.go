@@ -21,7 +21,8 @@ func TestStore_TransferTx(t *testing.T) {
 
 	for i := 0; i < n; i++ {
 		go func() {
-			result, err := store.TransferTx(context.Background(), TransferTxParams{
+			ctx := context.Background()
+			result, err := store.TransferTx(ctx, TransferTxParams{
 				FromAccountID: sql.NullInt64{
 					Int64: a1.ID,
 					Valid: true,
@@ -40,7 +41,6 @@ func TestStore_TransferTx(t *testing.T) {
 
 	for i := 0; i < n; i++ {
 		err := <-errs
-
 		require.NoError(t, err)
 
 		r := <-results
@@ -51,6 +51,8 @@ func TestStore_TransferTx(t *testing.T) {
 
 		_, err = store.GetTransfer(context.Background(), transfer.ID)
 		require.NoError(t, err)
+
+		require.Equal(t, r.Transfer.FromAccountID.Int64, a1.ID)
 
 	}
 }

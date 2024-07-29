@@ -12,12 +12,13 @@ var testQueries *Queries
 var testDB *sql.DB
 
 const (
+	dbDriver = "pgx"
 	dbSource = "postgresql://root:root@localhost:5432/simple_bank?sslmode=disable"
 )
 
 func TestMain(m *testing.M) {
 	var err error
-	testDB, err = sql.Open("pgx", dbSource)
+	testDB, err = sql.Open(dbDriver, dbSource)
 	if err != nil {
 		log.Fatal(err)
 	}
