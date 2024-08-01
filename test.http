@@ -1,0 +1,30 @@
+POST http://localhost:8080/accounts HTTP/1.1
+Content-Type: application/json
+
+{
+    "owner": "readccc1",
+    "currency": "USD"
+}
+
+POST  http://localhost:8080/transfers HTTP/1.1
+Content-Type: application/application/json
+
+{
+    "from_account_id": 8,
+    "to_account_id": 9,
+    "amount": 100,
+    "currency": "EUR"
+}
+
+GET http://localhost:8080/accounts?page_num=2&page_size=10 HTTP/1.1
+
+GET http://localhost:8080/accounts/2 HTTP/1.1
+
+
+POST http://localhost:8080/accounts HTTP/1.1
+Content-Type: application/json
+
+{
+    "owner": "read",
+    "Currency": "USD"
+}

@@ -11,11 +11,17 @@ dropdb:
 migrateup:
 	migrate -path ./db/migration -database "postgresql://root:root@localhost:5432/simple_bank?sslmode=disable" -verbose up
 
+migrateup1:
+	migrate -path ./db/migration -database "postgresql://root:root@localhost:5432/simple_bank?sslmode=disable" -verbose up 1
+
 migratedown:
 	migrate -path ./db/migration -database "postgresql://root:root@localhost:5432/simple_bank?sslmode=disable" -verbose down
 
+migratedown1:
+	migrate -path ./db/migration -database "postgresql://root:root@localhost:5432/simple_bank?sslmode=disable" -verbose down 1
+
 sqlc:
-	../bin/sqlc generate
+	sqlc generate
 
 test:
 	go test -v -cover ./...
@@ -23,4 +29,10 @@ test:
 pg:
 	docker exec -it pg15 psql -U root -d simple_bank 
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test pg
+server:
+	go run main.go 
+
+mock:
+	mockgen -package mockdb  -destination db/mock/store.go  readoGift/db/sqlc Store 
+
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test pg server mock migrateup1 migratedown1
