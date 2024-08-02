@@ -1,3 +1,13 @@
+POST http://localhost:8080/users HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "ReadCoolcc3",
+    "password": "mysqwe2",
+    "full_name": "Zhong lin Yin",
+    "email": "1q231aa@email.com"
+}
+
 POST http://localhost:8080/accounts HTTP/1.1
 Content-Type: application/json
 
